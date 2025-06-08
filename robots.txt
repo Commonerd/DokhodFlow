@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dividendflow.netlify.app/sitemap.xml
+Sitemap: https://dokhodflow.netlify.app/sitemap.xml
