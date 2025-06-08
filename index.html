@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ДоходПоток: Постройте свой пассивный доход и симулируйте будущие дивиденды</title>
+    <meta name="description" content="С ДоходПоток легко симулируйте свои будущие дивиденды для финансовой независимости. Простой и интуитивный калькулятор роста дивидендов. Начните свой путь к пассивному доходу уже сегодня!">
+    <meta name="keywords" content="дивидендный симулятор, пассивный доход, финансовая независимость, пенсионное планирование, рост дивидендов, инвестирование в доход, калькулятор дивидендов, накопление богатства, финансовая свобода">
+
+    <!-- Favicon SVG - Inline for simplicity -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%2322C55E' d='M20 80 L40 60 L60 70 L80 40 L80 80 L20 80 Z'/%3E%3Cpath fill='%2310B981' d='M85 30 L80 40 L60 70 L40 60 L15 85 L85 85 L85 30 Z'/%3E%3Cpolygon fill='%2310B981' points='60,70 80,40 85,45 65,75'/%3E%3Cpolygon fill='%2322C55E' points='40,60 60,70 65,75 45,65'/%3E%3C/svg%3E" type="image/svg+xml">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#10B981', // Emerald 600
+                        secondary: '#34D399', // Emerald 400
+                        accent: '#22C55E', // Green 500
+                        dark: '#1F2937', // Gray 800
+                        light: '#F9FAFB', // Gray 50
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB; /* Light gray background */
+            color: #1F2937; /* Dark text */
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 1.5rem; /* px-6 py-4 */
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1F2937;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #D1D5DB; /* Gray 300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            background-color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #10B981; /* Primary color */
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); /* Ring effect */
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-primary {
+            background-color: #10B981; /* Primary color */
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary:hover {
+            background-color: #059669; /* Darker primary */
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background-color: #6B7280; /* Gray 500 */
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+        }
+        .btn-secondary:hover {
+            background-color: #4B5563; /* Darker gray */
+            transform: translateY(-1px);
+        }
+        .card {
+            background-color: white;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #10B981, #34D399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top Ad Banner Placeholder -->
+    <div id="ad-banner-top" class="w-full bg-light py-2 text-center text-xs text-gray-500 border-b border-gray-200">
+        <!-- Ad Placeholder: Ideal for a top banner ad (e.g., 728x90) -->
+        <p>Здесь будет ваша реклама</p>
+    </div>
+
+    <header class="bg-white shadow-sm py-4">
+        <div class="container flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-gradient">ДоходПоток</h1>
+            <nav>
+                <!-- Future navigation links could go here -->
+                <a href="#" class="text-gray-600 hover:text-primary transition-colors text-sm md:text-base">О сервисе</a>
+                <a href="#" class="ml-4 text-gray-600 hover:text-primary transition-colors text-sm md:text-base">Часто задаваемые вопросы</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container py-8">
+        <section class="text-center mb-8">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-4 text-dark">
+                Симулируйте свой будущий <span class="text-gradient">дивидендный поток</span>
+            </h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Легко прогнозируйте рост своего пассивного дохода. Достигните финансовой независимости с ясными прогнозами.
+            </p>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Input Card -->
+            <div class="lg:col-span-1 card">
+                <h3 class="text-2xl font-semibold mb-6 text-dark">Ваши входные данные для дивидендов</h3>
+                <div class="mb-4">
+                    <label for="scenario-select" class="block text-sm font-medium text-gray-700 mb-2">Быстрые сценарии:</label>
+                    <select id="scenario-select" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary transition duration-150 ease-in-out">
+                        <option value="custom">Пользовательский ввод</option>
+                        <option value="conservative">Консервативный рост (Доходность 3%, Рост 5%)</option>
+                        <option value="aggressive">Агрессивный рост (Доходность 2%, Рост 8%)</option>
+                        <option value="income">Высокий доход (Доходность 5%, Рост 3%)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="input-group">
+                        <label for="initialInvestment">Начальные инвестиции (₽)</label>
+                        <input type="number" id="initialInvestment" value="500000" min="0" step="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="annualContribution">Ежегодный вклад (₽)</label>
+                        <input type="number" id="annualContribution" value="60000" min="0" step="1000">
+                    </div>
+                    <div class="input-group">
+                        <label for="dividendYield">Текущая дивидендная доходность (%)</label>
+                        <input type="number" id="dividendYield" value="3" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="dividendGrowthRate">Годовой темп роста дивидендов (%)</label>
+                        <input type="number" id="dividendGrowthRate" value="5" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="years">Период симуляции (лет)</label>
+                        <input type="number" id="years" value="20" min="1" max="50">
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-end gap-4">
+                    <button id="resetBtn" class="btn btn-secondary">Сбросить</button>
+                    <button id="calculateBtn" class="btn btn-primary">Рассчитать и Визуализировать</button>
+                </div>
+            </div>
+
+            <!-- Results and Chart Card -->
+            <div class="lg:col-span-2 card">
+                <h3 class="text-2xl font-semibold mb-6 text-dark">Ваши прогнозируемые дивиденды</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-light p-4 rounded-lg shadow-sm text-center">
+                        <p class="text-sm text-gray-500">Общая сумма инвестиций (накопленная)</p>
+                        <p id="totalInvested" class="text-2xl font-bold text-dark mt-1">₽0</p>
+                    </div>
+                    <div class="bg-light p-4 rounded-lg shadow-sm text-center">
+                        <p class="text-sm text-gray-500">Общая сумма полученных дивидендов</p>
+                        <p id="totalDividends" class="text-2xl font-bold text-dark mt-1">₽0</p>
+                    </div>
+                    <div class="bg-light p-4 rounded-lg shadow-sm text-center">
+                        <p class="text-sm text-gray-500">Ожидаемые годовые дивиденды (Год X)</p>
+                        <p id="estimatedAnnualDividends" class="text-2xl font-bold text-dark mt-1">₽0</p>
+                    </div>
+                </div>
+
+                <div class="relative h-80 md:h-96">
+                    <canvas id="dividendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- AdSense Placeholder - Mid-content -->
+        <div id="ad-banner-mid" class="w-full bg-light py-4 text-center text-xs text-gray-500 rounded-lg shadow-sm my-8">
+            <!-- Ad Placeholder: Good for a responsive display ad -->
+            <p>Здесь будет ваша реклама - Контекстная реклама</p>
+        </div>
+
+        <section class="card mt-8">
+            <h3 class="text-2xl font-semibold mb-4 text-dark">Почему ДоходПоток?</h3>
+            <p class="text-gray-600 mb-4">
+                Многие калькуляторы дивидендов слишком сложны, требуют глубоких финансовых знаний или утомительного ввода данных. ДоходПоток избавляет от этой сложности. Мы сосредоточены на главном: показать вам силу сложного процента дивидендов с минимальными усилиями.
+            </p>
+            <h4 class="text-xl font-semibold mb-2 text-dark">Упрощенная мощность:</h4>
+            <ul class="list-disc list-inside text-gray-600 mb-4">
+                <li><strong class="text-primary">Мгновенное понимание:</strong> Сразу видите траекторию роста ваших дивидендов, без жаргона.</li>
+                <li><strong class="text-primary">Быстрые сценарии:</strong> Быстро начните планирование с помощью предустановленных инвестиционных путей.</li>
+                <li><strong class="text-primary">Сохранение сессии:</strong> Ваша работа сохраняется, поэтому вы можете продолжить с того места, где остановились, безопасно.</li>
+            </ul>
+            <p class="text-gray-600">
+                Начните строить свой путь к финансовой свободе уже сегодня. Это проще, чем вы думаете!
+            </p>
+        </section>
+    </main>
+
+    <!-- Bottom Ad Banner Placeholder -->
+    <div id="ad-banner-bottom" class="w-full bg-light py-2 text-center text-xs text-gray-500 border-t border-gray-200 mt-8">
+        <!-- Ad Placeholder: Ideal for a bottom sticky ad or another banner -->
+        <p>Здесь будет ваша реклама</p>
+    </div>
+
+    <footer class="bg-dark text-white py-6 mt-auto">
+        <div class="container text-center text-sm">
+            <p>&copy; <span id="current-year"></span> ДоходПоток. Все права защищены.</p>
+            <p class="mt-2">
+                <a href="#" class="text-gray-400 hover:text-primary transition-colors">Политика конфиденциальности</a>
+                <span class="mx-2">|</span>
+                <a href="#" class="text-gray-400 hover:text-primary transition-colors">Условия использования</a>
+            </p>
+            <p class="mt-2 text-gray-500 text-xs">
+                Отказ от ответственности: Этот симулятор предназначен только для образовательных и информационных целей. Он не является финансовой консультацией. Перед принятием инвестиционных решений проконсультируйтесь с квалифицированным финансовым специалистом.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const initialInvestmentEl = document.getElementById('initialInvestment');
+            const annualContributionEl = document.getElementById('annualContribution');
+            const dividendYieldEl = document.getElementById('dividendYield');
+            const dividendGrowthRateEl = document.getElementById('dividendGrowthRate');
+            const yearsEl = document.getElementById('years');
+            const scenarioSelectEl = document.getElementById('scenario-select');
+            const totalInvestedEl = document.getElementById('totalInvested');
+            const totalDividendsEl = document.getElementById('totalDividends');
+            const estimatedAnnualDividendsEl = document.getElementById('estimatedAnnualDividends');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const chartCanvas = document.getElementById('dividendChart');
+            let dividendChart; // To hold the Chart.js instance
+
+            // Set current year in footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // --- Local Storage Management ---
+            const LOCAL_STORAGE_KEY = 'dohodFlowSimulatorData'; // Changed key for Russian version
+
+            function saveInputs() {
+                const data = {
+                    initialInvestment: initialInvestmentEl.value,
+                    annualContribution: annualContributionEl.value,
+                    dividendYield: dividendYieldEl.value,
+                    dividendGrowthRate: dividendGrowthRateEl.value,
+                    years: yearsEl.value,
+                    scenario: scenarioSelectEl.value // Save current scenario
+                };
+                try {
+                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+                } catch (e) {
+                    console.error("Failed to save to local storage:", e);
+                    // Optionally, show a non-intrusive message to the user
+                }
+            }
+
+            function loadInputs() {
+                try {
+                    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+                    if (savedData) {
+                        const data = JSON.parse(savedData);
+                        initialInvestmentEl.value = data.initialInvestment || '';
+                        annualContributionEl.value = data.annualContribution || '';
+                        dividendYieldEl.value = data.dividendYield || '';
+                        dividendGrowthRateEl.value = data.dividendGrowthRate || '';
+                        yearsEl.value = data.years || '';
+                        // Load scenario, but ensure it's a valid option
+                        if (Array.from(scenarioSelectEl.options).some(option => option.value === data.scenario)) {
+                            scenarioSelectEl.value = data.scenario;
+                        } else {
+                            scenarioSelectEl.value = 'custom'; // Default to custom if invalid
+                        }
+                        return true; // Data loaded
+                    }
+                } catch (e) {
+                    console.error("Failed to load from local storage:", e);
+                    // Clear corrupted data
+                    localStorage.removeItem(LOCAL_STORAGE_KEY);
+                }
+                return false; // No data or failed to load
+            }
+
+            function resetInputs() {
+                initialInvestmentEl.value = 500000; // Default for Russian context
+                annualContributionEl.value = 60000; // Default for Russian context
+                dividendYieldEl.value = 3;
+                dividendGrowthRateEl.value = 5;
+                yearsEl.value = 20;
+                scenarioSelectEl.value = 'custom';
+                saveInputs(); // Save default values
+                calculateDividends(); // Recalculate and update UI
+            }
+
+            // --- Simulation Logic ---
+            function calculateDividends() {
+                const initialInvestment = parseFloat(initialInvestmentEl.value) || 0;
+                const annualContribution = parseFloat(annualContributionEl.value) || 0;
+                let dividendYield = parseFloat(dividendYieldEl.value) / 100 || 0; // Convert to decimal
+                const dividendGrowthRate = parseFloat(dividendGrowthRateEl.value) / 100 || 0; // Convert to decimal
+                const years = parseInt(yearsEl.value) || 0;
+
+                // Basic validation
+                if (years <= 0 || dividendYield < 0 || dividendGrowthRate < 0) {
+                    // Show a non-intrusive message or clear results
+                    totalInvestedEl.textContent = '₽0';
+                    totalDividendsEl.textContent = '₽0';
+                    estimatedAnnualDividendsEl.textContent = '₽0';
+                    updateChart([], [], []);
+                    return;
+                }
+
+                let currentPortfolioValue = initialInvestment;
+                let totalInvested = initialInvestment;
+                let totalDividendsReceived = 0;
+                let annualDividends = [];
+                let portfolioValues = [];
+                let labels = [];
+
+                // Store initial yield to apply growth rate correctly per year
+                const startingDividendYield = dividendYield;
+
+                for (let i = 1; i <= years; i++) {
+                    labels.push(`Год ${i}`); // Translate "Year"
+
+                    // Adjust dividend yield for the current year based on growth rate
+                    const currentYearDividendYield = startingDividendYield * Math.pow(1 + dividendGrowthRate, i - 1);
+
+                    // Dividends received in the current year
+                    const dividendsThisYear = currentPortfolioValue * currentYearDividendYield;
+                    totalDividendsReceived += dividendsThisYear;
+                    annualDividends.push(dividendsThisYear);
+
+                    // Reinvest dividends (simplistic: assumes reinvestment at current yield)
+                    currentPortfolioValue += dividendsThisYear;
+
+                    // Add annual contribution at the end of the year (or beginning, consistent here)
+                    currentPortfolioValue += annualContribution;
+                    totalInvested += annualContribution;
+
+                    portfolioValues.push(currentPortfolioValue);
+                }
+
+                totalInvestedEl.textContent = `₽${totalInvested.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+                totalDividendsEl.textContent = `₽${totalDividendsReceived.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+                estimatedAnnualDividendsEl.textContent = `₽${(annualDividends[annualDividends.length - 1] || 0).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+
+                updateChart(labels, annualDividends, portfolioValues);
+                saveInputs(); // Save inputs after calculation
+            }
+
+            // --- Charting Logic ---
+            function updateChart(labels, annualDividends, portfolioValues) {
+                const ctx = chartCanvas.getContext('2d');
+
+                if (dividendChart) {
+                    dividendChart.destroy(); // Destroy previous chart instance
+                }
+
+                dividendChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Годовые дивиденды (₽)', // Translate label
+                                data: annualDividends,
+                                borderColor: 'rgb(16, 185, 129)', // primary color
+                                backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                                fill: true,
+                                tension: 0.3,
+                                borderWidth: 2,
+                                pointRadius: 3,
+                                pointBackgroundColor: 'rgb(16, 185, 129)'
+                            },
+                            {
+                                label: 'Стоимость портфеля (₽)', // Translate label
+                                data: portfolioValues,
+                                borderColor: 'rgb(52, 211, 153)', // secondary color
+                                backgroundColor: 'rgba(52, 211, 153, 0.1)',
+                                fill: false,
+                                tension: 0.3,
+                                borderWidth: 2,
+                                pointRadius: 3,
+                                pointBackgroundColor: 'rgb(52, 211, 153)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false, // Allow canvas to fill its parent
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 14,
+                                        family: 'Inter'
+                                    },
+                                    color: '#1F2937' // dark text
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += '₽' + context.parsed.y.toLocaleString(); // Use Ruble symbol
+                                        }
+                                        return label;
+                                    }
+                                },
+                                titleFont: { family: 'Inter' },
+                                bodyFont: { family: 'Inter' },
+                                footerFont: { family: 'Inter' },
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: 'white',
+                                bodyColor: 'white',
+                                borderColor: 'rgba(16, 185, 129, 0.5)',
+                                borderWidth: 1,
+                                borderRadius: 8,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Год', // Translate title
+                                    color: '#1F2937',
+                                    font: { size: 16, family: 'Inter', weight: 'bold' }
+                                },
+                                ticks: {
+                                    color: '#4B5563', // gray 700
+                                    font: { family: 'Inter' }
+                                },
+                                grid: {
+                                    color: '#E5E7EB' // gray 200
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Сумма (₽)', // Translate title
+                                    color: '#1F2937',
+                                    font: { size: 16, family: 'Inter', weight: 'bold' }
+                                },
+                                ticks: {
+                                    callback: function(value, index, values) {
+                                        return '₽' + value.toLocaleString(); // Use Ruble symbol
+                                    },
+                                    color: '#4B5563',
+                                    font: { family: 'Inter' }
+                                },
+                                grid: {
+                                    color: '#E5E7EB'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // --- Event Listeners ---
+            calculateBtn.addEventListener('click', calculateDividends);
+            resetBtn.addEventListener('click', resetInputs);
+
+            // Auto-calculate on input change for instant visualization
+            const inputElements = [
+                initialInvestmentEl,
+                annualContributionEl,
+                dividendYieldEl,
+                dividendGrowthRateEl,
+                yearsEl
+            ];
+            inputElements.forEach(input => {
+                input.addEventListener('input', calculateDividends);
+            });
+
+            // Quick-Start Scenario handler
+            scenarioSelectEl.addEventListener('change', function() {
+                const selectedScenario = this.value;
+                if (selectedScenario === 'conservative') {
+                    initialInvestmentEl.value = 500000; // 500,000 ₽
+                    annualContributionEl.value = 60000;  // 60,000 ₽
+                    dividendYieldEl.value = 3;
+                    dividendGrowthRateEl.value = 5;
+                    yearsEl.value = 20;
+                } else if (selectedScenario === 'aggressive') {
+                    initialInvestmentEl.value = 250000; // 250,000 ₽
+                    annualContributionEl.value = 120000; // 120,000 ₽
+                    dividendYieldEl.value = 2;
+                    dividendGrowthRateEl.value = 8;
+                    yearsEl.value = 25;
+                } else if (selectedScenario === 'income') {
+                    initialInvestmentEl.value = 2500000; // 2,500,000 ₽
+                    annualContributionEl.value = 30000; // 30,000 ₽
+                    dividendYieldEl.value = 5;
+                    dividendGrowthRateEl.value = 3;
+                    yearsEl.value = 15;
+                }
+                else { // 'custom' or any other case, do nothing, let user input
+                    // Optionally, could reset to default values here too
+                }
+                calculateDividends(); // Recalculate with new scenario values
+            });
+
+            // Initial load: Try to load from local storage, if not, calculate defaults
+            if (!loadInputs()) {
+                calculateDividends(); // Calculate with default values if no saved data
+            } else {
+                calculateDividends(); // Calculate with loaded values
+            }
+        });
+    </script>
+</body>
+</html>
